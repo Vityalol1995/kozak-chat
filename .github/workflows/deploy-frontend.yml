@@ -1,0 +1,35 @@
+name: Deploy Frontend to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master  # Или ветка, которую ты используешь для деплоя
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Укажи нужную версию Node.js
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./frontend  # Путь к директории фронтенда
+
+      - name: Build project
+        run: npm run build
+        working-directory: ./frontend
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIArmes/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages  # Ветка для деплоя
+          folder: ./frontend/.output/public  # Путь к собранным файлам
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
